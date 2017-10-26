@@ -1,1 +1,3 @@
-# message-queue
+## Queue
+
+Simple queue implementation using Go.
