@@ -20,6 +20,7 @@ type Store interface {
 	Get(Key) ([]byte, error)
 	Set(Key, []byte) error
 	Remove(Key) error
+	Count() (int64, error)
 }
 
 // Item a single item in the store.
@@ -93,7 +94,17 @@ func (s *store) Remove(k Key) error {
 	return nil
 }
 
+// Count returns the amount of items in the cache.
+// this is only an estimate as this includes the
+// amount of expired items.
+func (s *store) Count() (int64, error) {
+	s.Lock()
+	defer s.Unlock()
+
+	return int64(len(s.items)), nil
+}
+
 // New returns a new store instance.
-func new(config storeConfig) Store {
+func newStore(config storeConfig) Store {
 	return &store{items: make(map[Key]item), config: config}
 }
